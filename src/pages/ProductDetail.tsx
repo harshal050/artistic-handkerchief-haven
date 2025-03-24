@@ -6,6 +6,7 @@ import { Share2, ChevronLeft, Star, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 
 // Mock product data - this would come from an API in a real app
 const mockProduct = {
@@ -32,6 +33,8 @@ const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [selectedImage, setSelectedImage] = useState(0);
   const product = mockProduct; // In real app, fetch product by ID
+  const [newReview, setNewReview] = useState({ name: "", rating: 5, comment: "" });
+  const [reviews, setReviews] = useState(product.reviews);
   
   const discountedPrice = product.discount 
     ? product.price - (product.price * product.discount / 100) 
@@ -42,6 +45,27 @@ const ProductDetail = () => {
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, '_blank');
     toast.success("Ready to share on WhatsApp!");
+  };
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    
+    if (!newReview.name.trim() || !newReview.comment.trim()) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+    
+    const newReviewObj = {
+      id: (reviews.length + 1).toString(),
+      user: newReview.name,
+      rating: newReview.rating,
+      comment: newReview.comment,
+      date: new Date().toISOString().split('T')[0]
+    };
+    
+    setReviews([...reviews, newReviewObj]);
+    setNewReview({ name: "", rating: 5, comment: "" });
+    toast.success("Thank you for your review!");
   };
 
   return (
@@ -142,8 +166,8 @@ const ProductDetail = () => {
               <p className="text-muted-foreground">{product.description}</p>
             </div>
             
-            {/* Share Button */}
-            <div className="mt-8">
+            {/* Share Buttons */}
+            <div className="mt-8 flex flex-wrap gap-3">
               <Button 
                 onClick={handleShareOnWhatsApp}
                 className="bg-[#25D366] hover:bg-[#128C7E] text-white" 
@@ -159,9 +183,9 @@ const ProductDetail = () => {
         <div className="mt-16">
           <h2 className="text-2xl font-bold mb-6">Customer Reviews</h2>
           
-          {product.reviews.length > 0 ? (
+          {reviews.length > 0 ? (
             <div className="space-y-6">
-              {product.reviews.map(review => (
+              {reviews.map(review => (
                 <div key={review.id} className="bg-card rounded-lg p-4 border border-border">
                   <div className="flex items-center justify-between">
                     <h3 className="font-medium">{review.user}</h3>
@@ -183,6 +207,68 @@ const ProductDetail = () => {
           ) : (
             <p className="text-muted-foreground">No reviews yet for this product.</p>
           )}
+        </div>
+        
+        {/* Add Review Form */}
+        <div className="mt-12 bg-card rounded-lg p-6 border border-border">
+          <h3 className="text-xl font-semibold mb-4">Write a Review</h3>
+          
+          <form onSubmit={handleReviewSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
+                Your Name *
+              </label>
+              <Input 
+                value={newReview.name} 
+                onChange={(e) => setNewReview({...newReview, name: e.target.value})}
+                placeholder="Enter your name"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
+                Rating *
+              </label>
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5].map((rating) => (
+                  <button
+                    key={rating}
+                    type="button"
+                    onClick={() => setNewReview({...newReview, rating})}
+                    className="p-1"
+                    aria-label={`Rate ${rating} stars`}
+                  >
+                    <Star 
+                      size={24} 
+                      className={`${
+                        rating <= newReview.rating 
+                          ? 'text-amber-500 fill-amber-500' 
+                          : 'text-muted-foreground'
+                      } transition-colors`} 
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
+                Your Review *
+              </label>
+              <textarea 
+                className="w-full p-2 border border-input rounded-md min-h-[100px] focus:outline-none focus:ring-2 focus:ring-ring bg-background"
+                value={newReview.comment} 
+                onChange={(e) => setNewReview({...newReview, comment: e.target.value})}
+                placeholder="Share your thoughts about this product"
+                required
+              />
+            </div>
+            
+            <Button type="submit">
+              Submit Review
+            </Button>
+          </form>
         </div>
       </div>
     </Layout>
