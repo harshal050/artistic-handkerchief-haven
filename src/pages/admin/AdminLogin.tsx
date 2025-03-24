@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AdminLogin = () => {
   const [credentials, setCredentials] = useState({
@@ -12,6 +12,7 @@ const AdminLogin = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -28,18 +29,21 @@ const AdminLogin = () => {
     
     setIsLoading(true);
     
-    // Simulate authentication (would connect to backend in production)
+    // Static credential validation for now
+    // In a production environment, this would be handled by a backend
     setTimeout(() => {
       setIsLoading(false);
       
-      // Mock authentication - in production this would check against backend
-      if (credentials.username === "admin" && credentials.password === "password") {
+      if (credentials.username === "rkcreation" && credentials.password === "Krishna@2232") {
         toast.success("Login successful!");
-        // Would navigate to admin dashboard in production
+        // Store login state in localStorage
+        localStorage.setItem("adminLoggedIn", "true");
+        // Navigate to admin dashboard
+        navigate("/admin/dashboard");
       } else {
         toast.error("Invalid credentials. Please try again.");
       }
-    }, 1500);
+    }, 1000);
   };
 
   return (
@@ -57,12 +61,12 @@ const AdminLogin = () => {
                 <img 
                   src="/lovable-uploads/9b5842dd-9df6-4558-b7b1-8f96bda04cce.png" 
                   alt="RK.Creation Logo" 
-                  className="h-16 w-auto mx-auto mb-4"
+                  className="h-16 w-auto mx-auto mb-4 rounded-full"
                 />
               </Link>
               <h1 className="text-2xl font-bold">Admin Login</h1>
               <p className="text-muted-foreground text-sm mt-2">
-                Sign in to access the admin dashboard
+                Sign in to manage your products and reviews
               </p>
             </div>
             
@@ -78,7 +82,7 @@ const AdminLogin = () => {
                   value={credentials.username}
                   onChange={handleChange}
                   className="w-full p-3 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                  placeholder="Enter your username"
+                  placeholder="Enter admin username"
                 />
               </div>
               
@@ -94,7 +98,7 @@ const AdminLogin = () => {
                     value={credentials.password}
                     onChange={handleChange}
                     className="w-full p-3 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring pr-10"
-                    placeholder="Enter your password"
+                    placeholder="Enter admin password"
                   />
                   <button
                     type="button"
