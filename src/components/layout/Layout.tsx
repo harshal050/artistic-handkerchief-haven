@@ -18,9 +18,9 @@ export const Layout = ({
   withWhatsApp = true
 }: LayoutProps) => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen w-full">
       {withHeader && <Header />}
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 w-full">{children}</main>
       {withFooter && <Footer />}
       {withWhatsApp && <WhatsAppButton />}
     </div>
@@ -34,8 +34,8 @@ export const LayoutHeader: React.FC<{
   children?: React.ReactNode;
 }> = ({ title, description, className, children }) => {
   return (
-    <div className={`py-12 md:py-16 ${className}`}>
-      <div className="container-custom">
+    <div className={`py-8 md:py-16 ${className}`}>
+      <div className="container-custom px-4 md:px-6">
         {title && <h1 className="heading-lg mb-3">{title}</h1>}
         {description && <p className="text-muted-foreground max-w-2xl">{description}</p>}
         {children}
@@ -49,8 +49,8 @@ export const LayoutContent: React.FC<{
   children: React.ReactNode;
 }> = ({ className, children }) => {
   return (
-    <div className={`py-8 md:py-12 ${className}`}>
-      <div className="container-custom">
+    <div className={`py-6 md:py-12 ${className}`}>
+      <div className="container-custom px-4 md:px-6">
         {children}
       </div>
     </div>
