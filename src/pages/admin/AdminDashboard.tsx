@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -26,9 +25,9 @@ import {
   Menu,
   X,
   ChevronRight,
-  PieChart,
+  PieChart as LucidePieChart,
   BarChart2,
-  LineChart,
+  LineChart as LucideLineChart,
   User
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -72,7 +71,6 @@ import {
   Cell
 } from 'recharts';
 
-// Mock data for the dashboard
 const mockStats = {
   totalProducts: 24,
   totalReviews: 48,
@@ -82,7 +80,6 @@ const mockStats = {
   totalUsers: 87
 };
 
-// Mock categories for products
 const mockCategories = [
   "Wedding Collection",
   "Hastmelap Handkerchief",
@@ -91,7 +88,6 @@ const mockCategories = [
   "Chedachedi Handkerchief"
 ];
 
-// Mock products data
 const mockProducts = [
   {
     id: "1",
@@ -117,7 +113,6 @@ const mockProducts = [
   },
 ];
 
-// Mock reviews data
 const mockReviews = [
   {
     id: "1",
@@ -137,7 +132,6 @@ const mockReviews = [
   },
 ];
 
-// Mock queries data
 const mockQueries = [
   {
     id: "1",
@@ -157,7 +151,6 @@ const mockQueries = [
   },
 ];
 
-// Mock chart data for analytics
 const mockRatingData = [
   { name: '5 Stars', value: 25 },
   { name: '4 Stars', value: 15 },
@@ -184,7 +177,6 @@ const mockProductViewData = [
   { name: 'Chedachedi', views: 132 },
 ];
 
-// Contact details for settings
 const mockSettings = {
   whatsappNumber: "917434902998",
   instagramId: "_rk.creation1",
@@ -198,7 +190,6 @@ const mockSettings = {
   cloudinaryCloudName: ""
 };
 
-// COLORS for the charts
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
 const AdminDashboard = () => {
@@ -222,7 +213,6 @@ const AdminDashboard = () => {
   const isMobile = useIsMobile();
   const fileInputRef = useRef(null);
 
-  // New product form state
   const [newProduct, setNewProduct] = useState({
     name: "",
     category: "",
@@ -232,18 +222,14 @@ const AdminDashboard = () => {
     images: []
   });
 
-  // New file upload state
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    // Check if admin is logged in
     const isLoggedIn = localStorage.getItem("adminLoggedIn") === "true";
     if (!isLoggedIn) {
       navigate("/admin/login");
     }
-    
-    // In a real app, you would fetch real stats here
   }, [navigate]);
 
   const handleLogout = () => {
@@ -272,25 +258,19 @@ const AdminDashboard = () => {
   const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
     
-    // In a real app, you'd upload to Cloudinary here
-    // This is a mock implementation
     setUploading(true);
     
-    // Simulate upload delay
     setTimeout(() => {
-      // Create URLs for the files (in a real app, these would be Cloudinary URLs)
       const mockUploadedUrls = files.map(file => 
-        URL.createObjectURL(file)
+        URL.createObjectURL(file as Blob)
       );
       
       if (isEditProductOpen && selectedProduct) {
-        // For editing existing product
         setSelectedProduct({
           ...selectedProduct,
           images: [...selectedProduct.images, ...mockUploadedUrls]
         });
       } else {
-        // For adding new product
         setNewProduct({
           ...newProduct,
           images: [...newProduct.images, ...mockUploadedUrls]
@@ -304,7 +284,6 @@ const AdminDashboard = () => {
   };
 
   const handleAddProduct = () => {
-    // Validation
     if (!newProduct.name || !newProduct.category || !newProduct.price || !newProduct.description) {
       toast.error("Please fill in all required fields");
       return;
@@ -322,7 +301,6 @@ const AdminDashboard = () => {
 
     setProducts([...products, productToAdd]);
     
-    // Reset form
     setNewProduct({
       name: "",
       category: "",
@@ -381,7 +359,6 @@ const AdminDashboard = () => {
   };
 
   const handleSaveSettings = () => {
-    // In a real app, this would make an API call to update settings
     toast.success("Settings updated successfully");
   };
 
@@ -418,7 +395,6 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-secondary/20">
       <div className="flex min-h-screen flex-col md:flex-row">
-        {/* Mobile Header */}
         <div className="md:hidden bg-card border-b border-border p-4 flex justify-between items-center sticky top-0 z-30">
           <div className="flex items-center">
             <img 
@@ -437,7 +413,6 @@ const AdminDashboard = () => {
           </Button>
         </div>
         
-        {/* Mobile Menu */}
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetContent side="left" className="w-[250px] sm:w-[300px] p-0">
             <div className="flex flex-col h-full">
@@ -485,7 +460,6 @@ const AdminDashboard = () => {
           </SheetContent>
         </Sheet>
         
-        {/* Sidebar - Desktop */}
         <div className="w-64 bg-card border-r border-border hidden md:block">
           <div className="p-4 flex items-center justify-center border-b border-border">
             <img 
@@ -525,7 +499,6 @@ const AdminDashboard = () => {
           </nav>
         </div>
         
-        {/* Main content */}
         <div className="flex-1 overflow-auto">
           <header className="bg-card border-b border-border p-4 flex justify-between items-center hidden md:flex">
             <h1 className="text-xl font-semibold">
@@ -638,9 +611,7 @@ const AdminDashboard = () => {
                   </Card>
                 </div>
                 
-                {/* Analytics charts */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Rating distribution chart */}
                   <Card>
                     <CardHeader>
                       <CardTitle>Rating Distribution</CardTitle>
@@ -671,7 +642,6 @@ const AdminDashboard = () => {
                     </CardContent>
                   </Card>
                   
-                  {/* Weekly visits chart */}
                   <Card>
                     <CardHeader>
                       <CardTitle>Weekly Visits</CardTitle>
@@ -699,7 +669,6 @@ const AdminDashboard = () => {
                     </CardContent>
                   </Card>
                   
-                  {/* Product views chart */}
                   <Card className="lg:col-span-2">
                     <CardHeader>
                       <CardTitle>Product Category Views</CardTitle>
@@ -730,7 +699,6 @@ const AdminDashboard = () => {
               </div>
             )}
             
-            {/* Products Management */}
             {activeTab === "products" && (
               <div className="space-y-6">
                 <div className="bg-card p-4 md:p-6 rounded-lg">
@@ -798,7 +766,6 @@ const AdminDashboard = () => {
                   )}
                 </div>
                 
-                {/* Category Management */}
                 <div className="bg-card p-4 md:p-6 rounded-lg">
                   <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-semibold">Categories</h2>
@@ -819,7 +786,6 @@ const AdminDashboard = () => {
               </div>
             )}
             
-            {/* Reviews & Ratings Management */}
             {activeTab === "reviews" && (
               <div className="bg-card p-4 md:p-6 rounded-lg">
                 <h2 className="text-xl font-semibold mb-6">Reviews & Ratings</h2>
@@ -882,7 +848,6 @@ const AdminDashboard = () => {
               </div>
             )}
             
-            {/* User Queries Management */}
             {activeTab === "queries" && (
               <div className="bg-card p-4 md:p-6 rounded-lg">
                 <h2 className="text-xl font-semibold mb-6">User Queries</h2>
@@ -953,7 +918,6 @@ const AdminDashboard = () => {
               </div>
             )}
             
-            {/* Settings Section */}
             {activeTab === "settings" && (
               <div className="bg-card p-4 md:p-6 rounded-lg max-w-3xl mx-auto">
                 <h2 className="text-xl font-semibold mb-6">Settings</h2>
@@ -1026,7 +990,6 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                   
-                  {/* Database & Cloudinary Settings */}
                   <div>
                     <h3 className="text-base font-medium mb-4">Database & Storage Settings</h3>
                     <div className="space-y-4">
@@ -1095,7 +1058,6 @@ const AdminDashboard = () => {
         </div>
       </div>
       
-      {/* Add Category Sheet */}
       <Sheet open={isAddCategoryOpen} onOpenChange={setIsAddCategoryOpen}>
         <SheetContent>
           <SheetHeader>
@@ -1126,7 +1088,6 @@ const AdminDashboard = () => {
         </SheetContent>
       </Sheet>
       
-      {/* Add Product Sheet */}
       <Sheet open={isAddProductOpen} onOpenChange={setIsAddProductOpen}>
         <SheetContent className="sm:max-w-md overflow-auto">
           <SheetHeader>
@@ -1234,7 +1195,6 @@ const AdminDashboard = () => {
                 </p>
               </div>
               
-              {/* Preview uploaded images */}
               {newProduct.images.length > 0 && (
                 <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
                   {newProduct.images.map((url, index) => (
@@ -1270,7 +1230,6 @@ const AdminDashboard = () => {
         </SheetContent>
       </Sheet>
       
-      {/* Edit Product Sheet */}
       <Sheet open={isEditProductOpen && selectedProduct} onOpenChange={setIsEditProductOpen}>
         <SheetContent className="sm:max-w-md overflow-auto">
           <SheetHeader>
@@ -1371,7 +1330,6 @@ const AdminDashboard = () => {
                   />
                 </div>
                 
-                {/* Preview existing images */}
                 <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
                   {selectedProduct.images.map((url, index) => (
                     <div key={index} className="relative group aspect-square">
@@ -1406,7 +1364,6 @@ const AdminDashboard = () => {
         </SheetContent>
       </Sheet>
       
-      {/* Edit Review Sheet */}
       <Sheet open={isEditReviewOpen && selectedReview} onOpenChange={setIsEditReviewOpen}>
         <SheetContent>
           <SheetHeader>
