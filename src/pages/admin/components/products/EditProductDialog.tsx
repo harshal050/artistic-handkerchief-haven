@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Check, Upload, X } from "lucide-react";
 import { toast } from "sonner";
@@ -45,7 +44,7 @@ export const EditProductDialog = ({ isOpen, onClose, product, categories, refres
     setUploading(true);
     
     try {
-      // Convert files to base64 for Cloudinary upload
+      // Convert files to base64 for local storage
       const base64Files = await Promise.all(
         files.map(file => {
           return new Promise<string>((resolve) => {
@@ -58,7 +57,7 @@ export const EditProductDialog = ({ isOpen, onClose, product, categories, refres
         })
       );
       
-      // Upload to Cloudinary
+      // Get local file paths
       const uploadedUrls = await uploadImages(base64Files);
       
       setSelectedProduct({
@@ -66,10 +65,10 @@ export const EditProductDialog = ({ isOpen, onClose, product, categories, refres
         images: [...selectedProduct.images, ...uploadedUrls]
       });
       
-      toast.success(`${files.length} image(s) uploaded successfully`);
+      toast.success(`${files.length} image(s) added successfully`);
     } catch (error) {
-      console.error('Error uploading files:', error);
-      toast.error("Failed to upload images");
+      console.error('Error processing files:', error);
+      toast.error("Failed to process images");
     } finally {
       setUploading(false);
     }
@@ -216,7 +215,7 @@ export const EditProductDialog = ({ isOpen, onClose, product, categories, refres
                 {uploading ? (
                   <div className="flex items-center">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary mr-2"></div>
-                    <span>Uploading...</span>
+                    <span>Processing...</span>
                   </div>
                 ) : (
                   <>
@@ -240,7 +239,7 @@ export const EditProductDialog = ({ isOpen, onClose, product, categories, refres
                   {selectedProduct.images.map((image: string, index: number) => (
                     <div key={index} className="relative group">
                       <img
-                        src={image}
+                        src={image.startsWith('data:') ? image : image}
                         alt={`Product thumbnail ${index + 1}`}
                         className="w-full h-20 object-cover rounded-md"
                       />

@@ -22,6 +22,11 @@ export const getProductById = async (id: string): Promise<IProduct | null> => {
 
 export const createProduct = async (productData: any): Promise<IProduct> => {
   try {
+    // If no images are provided, use a placeholder
+    if (!productData.images || productData.images.length === 0) {
+      productData.images = ['/placeholder.svg'];
+    }
+    
     const product = new Product(productData);
     return await product.save();
   } catch (error) {

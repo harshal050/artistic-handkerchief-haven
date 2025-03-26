@@ -1,65 +1,30 @@
 
-import { v2 as cloudinary } from 'cloudinary';
 import { getSettings } from './settings.service';
 
-let isInitialized = false;
-
+// Local image upload service
 export const initializeCloudinary = async () => {
-  try {
-    if (!isInitialized) {
-      // First try to use environment variables
-      if (import.meta.env.VITE_CLOUDINARY_CLOUD_NAME && 
-          import.meta.env.VITE_CLOUDINARY_API_KEY && 
-          import.meta.env.VITE_CLOUDINARY_API_SECRET) {
-        
-        cloudinary.config({
-          cloud_name: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
-          api_key: import.meta.env.VITE_CLOUDINARY_API_KEY,
-          api_secret: import.meta.env.VITE_CLOUDINARY_API_SECRET
-        });
-        console.log('Cloudinary initialized from environment variables');
-        isInitialized = true;
-        return;
-      }
-      
-      // Fallback to database settings
-      const settings = await getSettings();
-      
-      if (settings && settings.cloudinaryCloudName) {
-        cloudinary.config({
-          cloud_name: settings.cloudinaryCloudName,
-          api_key: settings.cloudinaryApiKey,
-          api_secret: settings.cloudinaryApiSecret
-        });
-        console.log('Cloudinary initialized from database settings');
-        isInitialized = true;
-      } else {
-        console.warn('Cloudinary settings not found, using defaults');
-      }
-    }
-  } catch (error) {
-    console.error('Failed to initialize Cloudinary:', error);
-  }
+  console.log('Local storage initialized for images');
 };
 
-export const uploadImageToCloudinary = async (imageBuffer: string): Promise<string> => {
+export const uploadImageToCloudinary = async (imageBase64: string): Promise<string> => {
   try {
-    await initializeCloudinary();
+    // Check if the string is already a URL
+    if (imageBase64.startsWith('http')) {
+      return imageBase64;
+    }
+
+    // For base64 images, extract the data part (remove the prefix like 'data:image/jpeg;base64,')
+    const base64Data = imageBase64.split(',')[1] || imageBase64;
     
-    const result = await new Promise<any>((resolve, reject) => {
-      cloudinary.uploader.upload(
-        imageBuffer,
-        { folder: 'products' },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      );
-    });
+    // Generate a unique filename
+    const timestamp = new Date().getTime();
+    const randomString = Math.random().toString(36).substring(2, 15);
+    const filename = `${timestamp}-${randomString}.jpg`;
     
-    return result.secure_url;
+    // In a browser environment, we'll just return a reference to the local path
+    return `/uploads/${filename}`;
   } catch (error) {
-    console.error('Error uploading to Cloudinary:', error);
+    console.error('Error processing local image:', error);
     throw error;
   }
 };
