@@ -1,7 +1,8 @@
 
 import mongoose from 'mongoose';
 
-const MONGODB_URI = "mongodb+srv://harshal_050:Harshal%402772@cluster0.hchtgxj.mongodb.net/gwokdatabase?retryWrites=true&w=majority";
+// Use environment variable with fallback for MongoDB connection
+const MONGODB_URI = import.meta.env.VITE_MONGODB_URI || "mongodb+srv://harshal_050:Harshal%402772@cluster0.hchtgxj.mongodb.net/gwokdatabase?retryWrites=true&w=majority";
 
 export const connectToDatabase = async () => {
   try {

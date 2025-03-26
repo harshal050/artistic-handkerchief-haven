@@ -1,69 +1,65 @@
-# Welcome to your Lovable project
 
-## Project info
+# RK.Creation - Traditional Wedding Handkerchiefs
 
-**URL**: https://lovable.dev/projects/a9e38ddd-13d6-4c9d-9260-e0dcd35ba567
+This is a full-stack e-commerce application for RK.Creation, specializing in traditional wedding handkerchiefs.
 
-## How can I edit this code?
+## Environment Setup
 
-There are several ways of editing your application.
+1. Create a `.env` file in the root directory
+2. Copy the contents from `.env.example` to your `.env` file
+3. Replace the placeholder values with your actual MongoDB and Cloudinary credentials
 
-**Use Lovable**
+Example `.env` file:
+```
+# MongoDB Connection
+VITE_MONGODB_URI=mongodb+srv://your_username:your_password@your_cluster.mongodb.net/your_database
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a9e38ddd-13d6-4c9d-9260-e0dcd35ba567) and start prompting.
+# Cloudinary Configuration
+VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name
+VITE_CLOUDINARY_API_KEY=your_api_key
+VITE_CLOUDINARY_API_SECRET=your_api_secret
+```
 
-Changes made via Lovable will be committed automatically to this repo.
+## Getting Started
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
+1. Install dependencies:
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+2. Start the development server:
+```sh
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+3. Open your browser and navigate to:
+```
+http://localhost:8080
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Features
 
-**Use GitHub Codespaces**
+- Product catalog with categories
+- Product detail pages
+- Admin dashboard for product management
+- User reviews and ratings
+- Contact form for customer queries
+- Integration with MongoDB for data storage
+- Integration with Cloudinary for image hosting
+- Responsive design for all devices
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Project Structure
 
-## What technologies are used for this project?
+- `/src/models` - MongoDB schemas
+- `/src/services` - Backend services for database interactions
+- `/src/components` - Reusable React components
+- `/src/pages` - Page components
+- `/src/context` - React context providers
 
-This project is built with .
+## Admin Login
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Visit `/admin/login` and use the default credentials:
+- Username: rkcreation
+- Password: Krishna@2232
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/a9e38ddd-13d6-4c9d-9260-e0dcd35ba567) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+You can change these credentials in the admin settings panel.

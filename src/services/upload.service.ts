@@ -7,6 +7,22 @@ let isInitialized = false;
 export const initializeCloudinary = async () => {
   try {
     if (!isInitialized) {
+      // First try to use environment variables
+      if (import.meta.env.VITE_CLOUDINARY_CLOUD_NAME && 
+          import.meta.env.VITE_CLOUDINARY_API_KEY && 
+          import.meta.env.VITE_CLOUDINARY_API_SECRET) {
+        
+        cloudinary.config({
+          cloud_name: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
+          api_key: import.meta.env.VITE_CLOUDINARY_API_KEY,
+          api_secret: import.meta.env.VITE_CLOUDINARY_API_SECRET
+        });
+        console.log('Cloudinary initialized from environment variables');
+        isInitialized = true;
+        return;
+      }
+      
+      // Fallback to database settings
       const settings = await getSettings();
       
       if (settings && settings.cloudinaryCloudName) {
@@ -15,7 +31,7 @@ export const initializeCloudinary = async () => {
           api_key: settings.cloudinaryApiKey,
           api_secret: settings.cloudinaryApiSecret
         });
-        console.log('Cloudinary initialized');
+        console.log('Cloudinary initialized from database settings');
         isInitialized = true;
       } else {
         console.warn('Cloudinary settings not found, using defaults');

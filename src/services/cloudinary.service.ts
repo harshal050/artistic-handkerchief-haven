@@ -2,16 +2,24 @@
 import { v2 as cloudinary } from 'cloudinary';
 import Settings from '../models/Settings';
 
-// Initialize with default values
+// Initialize with environment variables or default values
 cloudinary.config({
-  cloud_name: 'demo',
-  api_key: '123456789012345',
-  api_secret: 'your-api-secret'
+  cloud_name: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'demo',
+  api_key: import.meta.env.VITE_CLOUDINARY_API_KEY || '123456789012345',
+  api_secret: import.meta.env.VITE_CLOUDINARY_API_SECRET || 'your-api-secret'
 });
 
 export const initializeCloudinary = async () => {
   try {
-    // Get settings from database
+    // If environment variables are set, we're already initialized
+    if (import.meta.env.VITE_CLOUDINARY_CLOUD_NAME && 
+        import.meta.env.VITE_CLOUDINARY_API_KEY && 
+        import.meta.env.VITE_CLOUDINARY_API_SECRET) {
+      console.log('Cloudinary initialized with environment variables');
+      return;
+    }
+    
+    // Fallback to database settings if environment variables aren't set
     const settings = await Settings.findOne({});
     
     if (settings && settings.cloudinaryCloudName) {
@@ -22,7 +30,7 @@ export const initializeCloudinary = async () => {
       });
       console.log('Cloudinary initialized with settings from database');
     } else {
-      console.log('Using default Cloudinary settings');
+      console.log('Using default Cloudinary settings (demo account)');
     }
   } catch (error) {
     console.error('Failed to initialize Cloudinary:', error);
