@@ -23,6 +23,9 @@ export const ProductCard = ({
   reviewCount = 0 
 }: ProductCardProps) => {
   const discountedPrice = discount ? price - (price * discount / 100) : price;
+
+  // Use fallback image if image is not available
+  const imageUrl = image || "/placeholder.svg";
   
   return (
     <motion.div 
@@ -35,9 +38,12 @@ export const ProductCard = ({
       <Link to={`/product/${id}`} className="block">
         <div className="aspect-square w-full overflow-hidden">
           <img 
-            src={image} 
+            src={imageUrl} 
             alt={name} 
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={(e) => {
+              e.currentTarget.src = "/placeholder.svg";
+            }}
           />
         </div>
         <div className="p-4">

@@ -1,24 +1,29 @@
 
-import { MessageCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { MessageSquare } from 'lucide-react';
+import { useDatabase } from '@/context/DatabaseContext';
 
 export const WhatsAppButton = () => {
-  const phoneNumber = "917434902998"; // Updated from 917434902998 to 917434902998
-  const whatsappUrl = `https://wa.me/${phoneNumber}`;
+  const { settings } = useDatabase();
+  const [whatsappNumber, setWhatsappNumber] = useState("917434902998");
+
+  useEffect(() => {
+    if (settings && settings.whatsappNumber) {
+      setWhatsappNumber(settings.whatsappNumber);
+    }
+  }, [settings]);
+
+  const handleClick = () => {
+    window.open(`https://wa.me/${whatsappNumber}`, '_blank');
+  };
 
   return (
-    <motion.a 
-      href={whatsappUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-3 rounded-full shadow-lg hover:bg-[#128C7E] transition-colors duration-300"
-      aria-label="Chat on WhatsApp"
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
+    <button
+      onClick={handleClick}
+      className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-all hover:scale-110"
+      aria-label="Contact on WhatsApp"
     >
-      <MessageCircle size={28} />
-    </motion.a>
+      <MessageSquare className="w-6 h-6" />
+    </button>
   );
 };

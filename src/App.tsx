@@ -1,53 +1,39 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "@/context/ThemeContext";
-import { motion, AnimatePresence } from "framer-motion";
-
-import Index from "./pages/Index";
+import { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import { Index } from "./pages/Index";
+import { About } from "./pages/About";
+import { Contact } from "./pages/Contact";
 import Gallery from "./pages/Gallery";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import ProductDetail from "./pages/ProductDetail";
-import AdminLogin from "./pages/admin/AdminLogin";
+import { ProductDetail } from "./pages/ProductDetail";
+import { NotFound } from "./pages/NotFound";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import NotFound from "./pages/NotFound";
+import { AdminLogin } from "./pages/admin/AdminLogin";
+import { ThemeProvider } from "./context/ThemeContext";
+import { DatabaseProvider } from "./context/DatabaseContext";
+import { Toaster } from "./components/ui/toaster";
+import { Toaster as SonnerToaster } from "sonner";
+import "./App.css";
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+function App() {
+  return (
     <ThemeProvider>
-      <TooltipProvider>
-        <AnimatePresence mode="wait">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/gallery" element={<Gallery />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </motion.div>
-        </AnimatePresence>
-      </TooltipProvider>
+      <DatabaseProvider>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Toaster />
+        <SonnerToaster position="top-center" />
+      </DatabaseProvider>
     </ThemeProvider>
-  </QueryClientProvider>
-);
+  );
+}
 
 export default App;
