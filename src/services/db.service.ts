@@ -2,15 +2,18 @@
 import mongoose from 'mongoose';
 
 // Use environment variable with fallback for MongoDB connection
-const MONGODB_URI = import.meta.env.VITE_MONGODB_URI || "mongodb+srv://harshal_050:Harshal%402772@cluster0.hchtgxj.mongodb.net/gwokdatabase?retryWrites=true&w=majority";
+// We're now using a local MongoDB connection as the fallback
+const MONGODB_URI = import.meta.env.VITE_MONGODB_URI || "mongodb://localhost:27017/gwokdatabase";
 
 export const connectToDatabase = async () => {
   try {
-    if (mongoose.connection.readyState === 1) {
+    // Check if already connected
+    if (mongoose.connection && mongoose.connection.readyState === 1) {
       console.log('Already connected to MongoDB');
       return;
     }
     
+    // Connect to MongoDB
     await mongoose.connect(MONGODB_URI);
     console.log('Connected to MongoDB');
   } catch (error) {
