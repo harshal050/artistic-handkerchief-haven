@@ -35,7 +35,7 @@ export const updateSettings = async (settingsData: any): Promise<ISettings | nul
   }
 };
 
-const createDefaultSettings = async (): Promise<ISettings> => {
+const createDefaultSettings = async () => {
   try {
     const defaultSettings = new Settings({
       whatsappNumber: "917434902998",

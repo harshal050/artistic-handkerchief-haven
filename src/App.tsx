@@ -1,14 +1,14 @@
 
 import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import { Index } from "./pages/Index";
-import { About } from "./pages/About";
-import { Contact } from "./pages/Contact";
+import Index from "./pages/Index";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 import Gallery from "./pages/Gallery";
-import { ProductDetail } from "./pages/ProductDetail";
-import { NotFound } from "./pages/NotFound";
+import ProductDetail from "./pages/ProductDetail";
+import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import { AdminLogin } from "./pages/admin/AdminLogin";
+import AdminLogin from "./pages/admin/AdminLogin";
 import { ThemeProvider } from "./context/ThemeContext";
 import { DatabaseProvider } from "./context/DatabaseContext";
 import { Toaster } from "./components/ui/toaster";
