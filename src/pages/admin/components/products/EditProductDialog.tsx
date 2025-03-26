@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { Check, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { updateProduct } from '@/services/product.service';
-import { uploadImages } from '@/services/upload.service';
+import { uploadImages } from '@/services/image-upload.service';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

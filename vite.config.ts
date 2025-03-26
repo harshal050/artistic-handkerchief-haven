@@ -20,6 +20,11 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  define: {
+    // Handle browser vs Node.js environments
+    'process.env': {},
+    'process.browser': true,
+  },
   // Make sure environment variables are properly loaded
   envPrefix: "VITE_",
 }));

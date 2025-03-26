@@ -1,6 +1,6 @@
 
 import Product, { IProduct } from '../models/Product';
-import { uploadImage } from './cloudinary.service';
+import { uploadImageToCloudinary } from './image-upload.service';
 
 export const getAllProducts = async (): Promise<IProduct[]> => {
   try {
@@ -50,7 +50,7 @@ export const deleteProduct = async (id: string): Promise<IProduct | null> => {
 
 export const uploadProductImage = async (base64Image: string): Promise<string> => {
   try {
-    return await uploadImage(base64Image);
+    return await uploadImageToCloudinary(base64Image);
   } catch (error) {
     console.error('Error uploading product image:', error);
     throw error;

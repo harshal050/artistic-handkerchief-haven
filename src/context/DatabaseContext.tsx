@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { connectToDatabase } from '../services/db.service';
 import { initializeDatabase } from '../services/init.service';
@@ -7,7 +6,6 @@ import { getAllCategories } from '../services/category.service';
 import { getAllReviews } from '../services/review.service';
 import { getAllQueries } from '../services/query.service';
 import { getSettings } from '../services/settings.service';
-import { initializeCloudinary } from '../services/upload.service';
 import { IProduct } from '../models/Product';
 import { ICategory } from '../models/Category';
 import { IReview } from '../models/Review';
@@ -58,9 +56,6 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       // Initialize the database with sample data if empty
       await initializeDatabase();
       
-      // Initialize Cloudinary
-      await initializeCloudinary();
-      
       // Fetch all data
       const [productsData, categoriesData, reviewsData, queriesData, settingsData] = await Promise.all([
         getAllProducts(),
@@ -87,7 +82,6 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  // Initial data load
   useEffect(() => {
     fetchData();
   }, []);
