@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Share2, ChevronLeft, Star, MessageCircle } from "lucide-react";
@@ -7,47 +7,59 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-
-// Mock product data - this would come from an API in a real app
-const mockProduct = {
-  id: "1",
-  name: "Wedding Handkerchief",
-  price: 1200,
-  discount: 10,
-  description: "Exquisite handcrafted wedding handkerchief with intricate design. Perfect for special occasions and memorable ceremonies.",
-  rating: 4.7,
-  reviewCount: 12,
-  images: [
-    "https://images.unsplash.com/photo-1606293459303-ec4d6a10b829?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
-    "https://images.unsplash.com/photo-1589810635657-232948472d98?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
-    "https://images.unsplash.com/photo-1483736762161-1d107f3c78e1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
-  ],
-  category: "Wedding Collection",
-  reviews: [
-    { id: "1", user: "Raj Patel", rating: 5, comment: "Beautiful design and excellent quality!", date: "2023-12-15" },
-    { id: "2", user: "Priya Sharma", rating: 4, comment: "Lovely handkerchief, perfect for my wedding.", date: "2023-11-20" },
-  ]
-};
+import { useDatabase } from "@/context/DatabaseContext";
+import { getReviewsByProductId, createReview } from "@/services/review.service";
+import { IReview } from "@/models/Review";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const { products, loading } = useDatabase();
   const [selectedImage, setSelectedImage] = useState(0);
-  const product = mockProduct; // In real app, fetch product by ID
+  const [product, setProduct] = useState<any>(null);
+  const [productReviews, setProductReviews] = useState<IReview[]>([]);
   const [newReview, setNewReview] = useState({ name: "", rating: 5, comment: "" });
-  const [reviews, setReviews] = useState(product.reviews);
+  const [loadingReviews, setLoadingReviews] = useState(true);
   
-  const discountedPrice = product.discount 
+  useEffect(() => {
+    if (products.length > 0 && id) {
+      const foundProduct = products.find(p => p._id === id);
+      setProduct(foundProduct || null);
+    }
+  }, [products, id]);
+  
+  useEffect(() => {
+    const loadReviews = async () => {
+      if (id) {
+        try {
+          setLoadingReviews(true);
+          const reviews = await getReviewsByProductId(id);
+          setProductReviews(reviews);
+        } catch (error) {
+          console.error("Error loading reviews:", error);
+          toast.error("Failed to load reviews");
+        } finally {
+          setLoadingReviews(false);
+        }
+      }
+    };
+    
+    loadReviews();
+  }, [id]);
+  
+  const discountedPrice = product?.discount 
     ? product.price - (product.price * product.discount / 100) 
-    : product.price;
+    : product?.price;
   
   const handleShareOnWhatsApp = () => {
+    if (!product) return;
+    
     const text = `Check out this product: ${product.name} - ₹${discountedPrice}\n${product.description}\n\nView it here: ${window.location.href}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, '_blank');
     toast.success("Ready to share on WhatsApp!");
   };
 
-  const handleReviewSubmit = (e) => {
+  const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!newReview.name.trim() || !newReview.comment.trim()) {
@@ -55,18 +67,52 @@ const ProductDetail = () => {
       return;
     }
     
-    const newReviewObj = {
-      id: (reviews.length + 1).toString(),
-      user: newReview.name,
-      rating: newReview.rating,
-      comment: newReview.comment,
-      date: new Date().toISOString().split('T')[0]
-    };
-    
-    setReviews([...reviews, newReviewObj]);
-    setNewReview({ name: "", rating: 5, comment: "" });
-    toast.success("Thank you for your review!");
+    try {
+      const reviewData = {
+        productId: id,
+        userName: newReview.name,
+        rating: newReview.rating,
+        comment: newReview.comment,
+        date: new Date()
+      };
+      
+      const savedReview = await createReview(reviewData);
+      setProductReviews([...productReviews, savedReview]);
+      setNewReview({ name: "", rating: 5, comment: "" });
+      toast.success("Thank you for your review!");
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      toast.error("Failed to submit review. Please try again.");
+    }
   };
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="container-custom py-8 text-center">
+          Loading product details...
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!product) {
+    return (
+      <Layout>
+        <div className="container-custom py-8 text-center">
+          <h2 className="text-2xl font-bold mb-4">Product Not Found</h2>
+          <p className="mb-6">The product you're looking for doesn't exist or has been removed.</p>
+          <Link 
+            to="/gallery" 
+            className="inline-flex items-center text-sm bg-primary text-primary-foreground px-4 py-2 rounded"
+          >
+            <ChevronLeft size={16} className="mr-1" />
+            Back to Gallery
+          </Link>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -96,23 +142,25 @@ const ProductDetail = () => {
             </motion.div>
             
             {/* Thumbnail Gallery */}
-            <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
-              {product.images.map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedImage(index)}
-                  className={`relative w-20 h-20 rounded-md overflow-hidden flex-shrink-0 transition-all ${
-                    selectedImage === index ? 'ring-2 ring-primary' : 'ring-1 ring-border'
-                  }`}
-                >
-                  <img 
-                    src={image} 
-                    alt={`${product.name} thumbnail ${index + 1}`} 
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
+            {product.images.length > 1 && (
+              <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
+                {product.images.map((image: string, index: number) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImage(index)}
+                    className={`relative w-20 h-20 rounded-md overflow-hidden flex-shrink-0 transition-all ${
+                      selectedImage === index ? 'ring-2 ring-primary' : 'ring-1 ring-border'
+                    }`}
+                  >
+                    <img 
+                      src={image} 
+                      alt={`${product.name} thumbnail ${index + 1}`} 
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           
           {/* Product Details */}
@@ -126,32 +174,40 @@ const ProductDetail = () => {
               </span>
             </div>
             
-            {/* Ratings */}
+            {/* Ratings Summary */}
             <div className="flex items-center mt-4">
               <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                  <Star 
-                    key={i} 
-                    size={16} 
-                    className={i < Math.round(product.rating) 
-                      ? 'text-amber-500 fill-amber-500' 
-                      : 'text-muted-foreground'
-                    } 
-                  />
-                ))}
+                {[...Array(5)].map((_, i) => {
+                  const averageRating = productReviews.length > 0 
+                    ? productReviews.reduce((acc, review) => acc + review.rating, 0) / productReviews.length 
+                    : 0;
+                  
+                  return (
+                    <Star 
+                      key={i} 
+                      size={16} 
+                      className={i < Math.round(averageRating) 
+                        ? 'text-amber-500 fill-amber-500' 
+                        : 'text-muted-foreground'
+                      } 
+                    />
+                  );
+                })}
               </div>
               <span className="ml-2 text-sm text-muted-foreground">
-                {product.rating} ({product.reviewCount} reviews)
+                {productReviews.length > 0 
+                  ? `${(productReviews.reduce((acc, review) => acc + review.rating, 0) / productReviews.length).toFixed(1)} (${productReviews.length} reviews)`
+                  : "No reviews yet"}
               </span>
             </div>
             
             {/* Price */}
             <div className="mt-6 flex items-end gap-2">
-              <span className="text-3xl font-bold">₹{discountedPrice.toFixed(0)}</span>
+              <span className="text-3xl font-bold">₹{discountedPrice?.toFixed(0)}</span>
               {product.discount && (
                 <>
                   <span className="text-xl text-muted-foreground line-through">
-                    ₹{product.price.toFixed(0)}
+                    ₹{product.price?.toFixed(0)}
                   </span>
                   <span className="ml-2 bg-primary/10 text-primary px-2 py-0.5 rounded text-sm">
                     {product.discount}% OFF
@@ -183,13 +239,17 @@ const ProductDetail = () => {
         <div className="mt-16">
           <h2 className="text-2xl font-bold mb-6">Customer Reviews</h2>
           
-          {reviews.length > 0 ? (
+          {loadingReviews ? (
+            <div className="text-center py-4">Loading reviews...</div>
+          ) : productReviews.length > 0 ? (
             <div className="space-y-6">
-              {reviews.map(review => (
-                <div key={review.id} className="bg-card rounded-lg p-4 border border-border">
+              {productReviews.map(review => (
+                <div key={review._id} className="bg-card rounded-lg p-4 border border-border">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-medium">{review.user}</h3>
-                    <span className="text-xs text-muted-foreground">{review.date}</span>
+                    <h3 className="font-medium">{review.userName}</h3>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(review.date).toLocaleDateString()}
+                    </span>
                   </div>
                   <div className="flex mt-1">
                     {[...Array(5)].map((_, i) => (

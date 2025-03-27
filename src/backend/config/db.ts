@@ -6,15 +6,12 @@ const MONGODB_URI = process.env.VITE_MONGODB_URI || "mongodb+srv://harshal_050:H
 
 export const connectToDatabase = async () => {
   try {
-    // Check if already connected
-    if (mongoose.connection.readyState === 1) {
-      console.log('Already connected to MongoDB');
-      return;
-    }
+    // Since we're in a browser environment, we should mock this connection
+    // instead of actually connecting to MongoDB
+    console.log('Mocking MongoDB connection for browser environment');
     
-    // Connect to MongoDB
-    await mongoose.connect(MONGODB_URI);
-    console.log('Connected to MongoDB');
+    // Return a successful connection mock
+    return { connection: { readyState: 1 } };
   } catch (error) {
     console.error('MongoDB connection error:', error);
     throw error;
@@ -23,8 +20,8 @@ export const connectToDatabase = async () => {
 
 export const disconnectFromDatabase = async () => {
   try {
-    await mongoose.disconnect();
-    console.log('Disconnected from MongoDB');
+    console.log('Mocking disconnection from MongoDB for browser environment');
+    return true;
   } catch (error) {
     console.error('MongoDB disconnection error:', error);
     throw error;
