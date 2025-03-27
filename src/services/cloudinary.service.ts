@@ -1,52 +1,25 @@
 
-import { v2 as cloudinary } from 'cloudinary';
-import Settings from '../models/Settings';
+// This is a mock cloudinary service for the frontend
+// In a real application, this would call your backend's cloudinary integration
 
-// Initialize with environment variables or default values
-cloudinary.config({
-  cloud_name: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'demo',
-  api_key: import.meta.env.VITE_CLOUDINARY_API_KEY || '123456789012345',
-  api_secret: import.meta.env.VITE_CLOUDINARY_API_SECRET || 'your-api-secret'
-});
-
-export const initializeCloudinary = async () => {
+export const uploadImageToCloudinary = async (file: string): Promise<string> => {
   try {
-    // If environment variables are set, we're already initialized
-    if (import.meta.env.VITE_CLOUDINARY_CLOUD_NAME && 
-        import.meta.env.VITE_CLOUDINARY_API_KEY && 
-        import.meta.env.VITE_CLOUDINARY_API_SECRET) {
-      console.log('Cloudinary initialized with environment variables');
-      return;
-    }
-    
-    // Fallback to database settings if environment variables aren't set
-    const settings = await Settings.findOne({});
-    
-    if (settings && settings.cloudinaryCloudName) {
-      cloudinary.config({
-        cloud_name: settings.cloudinaryCloudName,
-        api_key: settings.cloudinaryApiKey,
-        api_secret: settings.cloudinaryApiSecret
-      });
-      console.log('Cloudinary initialized with settings from database');
-    } else {
-      console.log('Using default Cloudinary settings (demo account)');
-    }
-  } catch (error) {
-    console.error('Failed to initialize Cloudinary:', error);
-  }
-};
-
-export const uploadImage = async (file: string): Promise<string> => {
-  try {
-    const result = await cloudinary.uploader.upload(file, {
-      folder: 'products'
-    });
-    return result.secure_url;
+    // In a real app, we would make a call to the backend
+    // For now, just return a mock URL
+    const timestamp = new Date().getTime();
+    const randomString = Math.random().toString(36).substring(2, 15);
+    return `https://res.cloudinary.com/demo/image/upload/v${timestamp}/${randomString}`;
   } catch (error) {
     console.error('Cloudinary upload error:', error);
     throw error;
   }
 };
 
-export default cloudinary;
+export default {
+  uploader: {
+    upload: async (file: string) => {
+      const url = await uploadImageToCloudinary(file);
+      return { secure_url: url };
+    }
+  }
+};

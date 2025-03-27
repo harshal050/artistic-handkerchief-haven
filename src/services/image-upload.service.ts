@@ -1,37 +1,18 @@
 
 import axios from 'axios';
-import { getSettings } from './settings.service';
 
-// Local image upload service
-export const uploadImageToCloudinary = async (imageBase64: string): Promise<string> => {
-  try {
-    // Check if the string is already a URL
-    if (imageBase64.startsWith('http')) {
-      return imageBase64;
-    }
-
-    // For base64 images, extract the data part (remove the prefix like 'data:image/jpeg;base64,')
-    const base64Data = imageBase64.split(',')[1] || imageBase64;
-    
-    // Generate a unique filename
-    const timestamp = new Date().getTime();
-    const randomString = Math.random().toString(36).substring(2, 15);
-    const filename = `${timestamp}-${randomString}.jpg`;
-    
-    // In a browser environment, we'll just return a reference to the local path
-    // This would typically be handled by a server endpoint, but for simplicity
-    // we're just returning a path to where the image would be stored locally
-    return `/uploads/${filename}`;
-  } catch (error) {
-    console.error('Error processing local image:', error);
-    throw error;
-  }
-};
-
+// Simple image upload service - for now, it just returns the image paths
 export const uploadImages = async (imageFiles: string[]): Promise<string[]> => {
   try {
-    const uploadPromises = imageFiles.map(file => uploadImageToCloudinary(file));
-    return await Promise.all(uploadPromises);
+    // For simplicity, we're just returning the image paths directly
+    // In a real app, you would upload these to a server/cloud storage
+    return imageFiles.map((file, index) => {
+      if (file.startsWith('data:')) {
+        // This is a base64 image, generate a placeholder URL
+        return `/uploads/image-${Date.now()}-${index}.jpg`;
+      }
+      return file; // Already a URL
+    });
   } catch (error) {
     console.error('Error uploading images:', error);
     throw error;
