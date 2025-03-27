@@ -1,18 +1,21 @@
 
 export interface ISettings {
-  _id?: string;
-  storeName?: string;
+  _id: string;
+  siteName?: string;
+  logo?: string;
   email?: string;
   phone?: string;
-  whatsapp?: string;
   address?: string;
-  aboutShort?: string;
+  whatsappNumber?: string;
   socialLinks?: {
     facebook?: string;
-    instagram?: string;
     twitter?: string;
+    instagram?: string;
     youtube?: string;
   };
-  adminUsername?: string;
-  adminPassword?: string;
+  features?: {
+    enableReviews?: boolean;
+    enableQueries?: boolean;
+    enableNewsletter?: boolean;
+  };
 }

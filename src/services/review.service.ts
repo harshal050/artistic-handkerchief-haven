@@ -35,6 +35,20 @@ export const createReview = async (reviewData: any): Promise<IReview> => {
   }
 };
 
+export const updateReview = async (id: string, reviewData: any): Promise<IReview | null> => {
+  try {
+    console.log(`Updating review with id ${id}:`, reviewData);
+    return {
+      _id: id,
+      ...reviewData,
+      updatedAt: new Date()
+    };
+  } catch (error) {
+    console.error(`Error updating review with id ${id}:`, error);
+    throw error;
+  }
+};
+
 export const deleteReview = async (id: string): Promise<IReview | null> => {
   try {
     console.log(`Deleting review with id ${id}`);

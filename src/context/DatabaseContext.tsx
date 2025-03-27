@@ -61,20 +61,48 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       // Initialize API and fetch all data
       const data = await initializeApi();
       
+      // Convert backend types to frontend types
+      const frontendProducts: IProduct[] = data.products.map((p: any) => ({
+        ...p,
+        _id: p._id?.toString() || '',
+        categoryId: p.categoryId?.toString() || '',
+      }));
+      
+      const frontendCategories: ICategory[] = data.categories.map((c: any) => ({
+        ...c,
+        _id: c._id?.toString() || '',
+      }));
+      
+      const frontendReviews: IReview[] = data.reviews.map((r: any) => ({
+        ...r,
+        _id: r._id?.toString() || '',
+        productId: r.productId?.toString() || '',
+      }));
+      
+      const frontendQueries: IQuery[] = data.queries.map((q: any) => ({
+        ...q,
+        _id: q._id?.toString() || '',
+      }));
+      
+      const frontendSettings: ISettings | null = data.settings ? {
+        ...data.settings,
+        _id: data.settings._id?.toString() || '',
+      } : null;
+      
       // Update state
-      setProducts(data.products);
-      setCategories(data.categories);
-      setReviews(data.reviews);
-      setQueries(data.queries);
-      setSettings(data.settings);
+      setProducts(frontendProducts);
+      setCategories(frontendCategories);
+      setReviews(frontendReviews);
+      setQueries(frontendQueries);
+      setSettings(frontendSettings);
       
       // Cache data for service layer
       window.cachedData = {
-        products: data.products,
-        categories: data.categories,
-        reviews: data.reviews,
-        queries: data.queries,
-        settings: data.settings
+        products: frontendProducts,
+        categories: frontendCategories,
+        reviews: frontendReviews,
+        queries: frontendQueries,
+        settings: frontendSettings
       };
       
       setError(null);
