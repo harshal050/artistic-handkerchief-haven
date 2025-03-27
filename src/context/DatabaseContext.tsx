@@ -1,12 +1,25 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { IProduct } from '../backend/models/Product';
-import { ICategory } from '../backend/models/Category';
-import { IReview } from '../backend/models/Review';
-import { IQuery } from '../backend/models/Query';
-import { ISettings } from '../backend/models/Settings';
+import { IProduct } from '../models/Product';
+import { ICategory } from '../models/Category';
+import { IReview } from '../models/Review';
+import { IQuery } from '../models/Query';
+import { ISettings } from '../models/Settings';
 import { initializeApi } from '../frontend/api/api';
 import { toast } from 'sonner';
+
+// Declare global window with cached data property
+declare global {
+  interface Window {
+    cachedData?: {
+      products: IProduct[];
+      categories: ICategory[];
+      reviews: IReview[];
+      queries: IQuery[];
+      settings: ISettings | null;
+    };
+  }
+}
 
 interface DatabaseContextProps {
   products: IProduct[];
@@ -54,6 +67,15 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setReviews(data.reviews);
       setQueries(data.queries);
       setSettings(data.settings);
+      
+      // Cache data for service layer
+      window.cachedData = {
+        products: data.products,
+        categories: data.categories,
+        reviews: data.reviews,
+        queries: data.queries,
+        settings: data.settings
+      };
       
       setError(null);
     } catch (error) {

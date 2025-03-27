@@ -1,23 +1,22 @@
 
-import { ISettings } from "@/models/Settings";
-import axios from "axios";
+import { ISettings } from '../models/Settings';
 
-const API_URL = "/api/settings";
-
-export const getSettings = async (): Promise<ISettings> => {
+export const getSettings = async (): Promise<ISettings | null> => {
   try {
-    const response = await axios.get(API_URL);
-    return response.data;
+    return window.cachedData?.settings || null;
   } catch (error) {
     console.error('Error fetching settings:', error);
     throw error;
   }
 };
 
-export const updateSettings = async (settingsData: Partial<ISettings>): Promise<ISettings> => {
+export const updateSettings = async (settingsData: any): Promise<ISettings | null> => {
   try {
-    const response = await axios.put(API_URL, settingsData);
-    return response.data;
+    console.log('Updating settings:', settingsData);
+    return {
+      _id: '1',
+      ...settingsData
+    };
   } catch (error) {
     console.error('Error updating settings:', error);
     throw error;

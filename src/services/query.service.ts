@@ -1,42 +1,54 @@
 
-import { IQuery } from "@/models/Query";
-import axios from "axios";
-
-const API_URL = "/api/queries";
+import { IQuery } from '../models/Query';
 
 export const getAllQueries = async (): Promise<IQuery[]> => {
   try {
-    const response = await axios.get(API_URL);
-    return response.data;
+    return window.cachedData?.queries || [];
   } catch (error) {
     console.error('Error fetching queries:', error);
     throw error;
   }
 };
 
-export const createQuery = async (queryData: Partial<IQuery>): Promise<IQuery> => {
+export const createQuery = async (queryData: any): Promise<IQuery> => {
   try {
-    const response = await axios.post(API_URL, queryData);
-    return response.data;
+    console.log('Creating query:', queryData);
+    return {
+      _id: Date.now().toString(),
+      ...queryData,
+      status: 'pending',
+      date: new Date(),
+      createdAt: new Date()
+    };
   } catch (error) {
     console.error('Error creating query:', error);
     throw error;
   }
 };
 
-export const updateQueryStatus = async (id: string, status: 'pending' | 'done'): Promise<IQuery> => {
+export const updateQueryStatus = async (id: string, status: 'pending' | 'done'): Promise<IQuery | null> => {
   try {
-    const response = await axios.put(`${API_URL}/${id}/status`, { status });
-    return response.data;
+    console.log(`Updating query status with id ${id} to ${status}`);
+    return {
+      _id: id,
+      name: '',
+      email: '',
+      phone: '',
+      message: '',
+      status,
+      date: new Date(),
+      createdAt: new Date()
+    };
   } catch (error) {
     console.error(`Error updating query status with id ${id}:`, error);
     throw error;
   }
 };
 
-export const deleteQuery = async (id: string): Promise<void> => {
+export const deleteQuery = async (id: string): Promise<IQuery | null> => {
   try {
-    await axios.delete(`${API_URL}/${id}`);
+    console.log(`Deleting query with id ${id}`);
+    return null;
   } catch (error) {
     console.error(`Error deleting query with id ${id}:`, error);
     throw error;
