@@ -1,6 +1,6 @@
 
 import Product, { IProduct } from '../models/Product';
-import { uploadImageToCloudinary } from './image-upload.service';
+import { uploadImageToCloudinary } from './upload.service';
 
 export const getAllProducts = async (): Promise<IProduct[]> => {
   try {

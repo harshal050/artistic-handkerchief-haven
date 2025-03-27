@@ -2,8 +2,7 @@
 import mongoose from 'mongoose';
 
 // Use environment variable with fallback for MongoDB connection
-// We're now using a local MongoDB connection as the fallback
-const MONGODB_URI = import.meta.env.VITE_MONGODB_URI || "mongodb://localhost:27017/gwokdatabase";
+const MONGODB_URI = process.env.VITE_MONGODB_URI || "mongodb://localhost:27017/gwokdatabase";
 
 export const connectToDatabase = async () => {
   try {

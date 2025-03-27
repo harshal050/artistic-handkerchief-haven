@@ -1,5 +1,4 @@
-
-import { connectToDatabase } from './db.service';
+import { connectToDatabase } from '../config/db';
 import Product from '../models/Product';
 import Category from '../models/Category';
 import Settings from '../models/Settings';
@@ -153,7 +152,7 @@ const defaultSettings = {
   location: "Vadodara, Gujarat, India",
   adminUsername: "rkcreation",
   adminPassword: "Krishna@2232",
-  mongoDbUrl: "mongodb+srv://harshal_050:Harshal%402772@cluster0.hchtgxj.mongodb.net/gwokdatabase?retryWrites=true&w=majority",
+  mongoDbUrl: "mongodb://localhost:27017/gwokdatabase",
   cloudinaryApiKey: "",
   cloudinaryApiSecret: "",
   cloudinaryCloudName: ""

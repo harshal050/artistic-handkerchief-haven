@@ -1,16 +1,11 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { connectToDatabase } from '../services/db.service';
-import { initializeDatabase } from '../services/init.service';
-import { getAllProducts } from '../services/product.service';
-import { getAllCategories } from '../services/category.service';
-import { getAllReviews } from '../services/review.service';
-import { getAllQueries } from '../services/query.service';
-import { getSettings } from '../services/settings.service';
-import { IProduct } from '../models/Product';
-import { ICategory } from '../models/Category';
-import { IReview } from '../models/Review';
-import { IQuery } from '../models/Query';
-import { ISettings } from '../models/Settings';
+import { IProduct } from '../backend/models/Product';
+import { ICategory } from '../backend/models/Category';
+import { IReview } from '../backend/models/Review';
+import { IQuery } from '../backend/models/Query';
+import { ISettings } from '../backend/models/Settings';
+import { initializeApi } from '../frontend/api/api';
 import { toast } from 'sonner';
 
 interface DatabaseContextProps {
@@ -50,27 +45,15 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       setLoading(true);
       
-      // Connect to the database
-      await connectToDatabase();
-      
-      // Initialize the database with sample data if empty
-      await initializeDatabase();
-      
-      // Fetch all data
-      const [productsData, categoriesData, reviewsData, queriesData, settingsData] = await Promise.all([
-        getAllProducts(),
-        getAllCategories(),
-        getAllReviews(),
-        getAllQueries(),
-        getSettings()
-      ]);
+      // Initialize API and fetch all data
+      const data = await initializeApi();
       
       // Update state
-      setProducts(productsData);
-      setCategories(categoriesData);
-      setReviews(reviewsData);
-      setQueries(queriesData);
-      setSettings(settingsData);
+      setProducts(data.products);
+      setCategories(data.categories);
+      setReviews(data.reviews);
+      setQueries(data.queries);
+      setSettings(data.settings);
       
       setError(null);
     } catch (error) {

@@ -1,12 +1,12 @@
 
 import axios from 'axios';
-import { connectToDatabase } from '../services/db.service';
-import { initializeDatabase } from '../services/init.service';
-import { getAllProducts } from '../services/product.service';
-import { getAllCategories } from '../services/category.service';
-import { getAllReviews } from '../services/review.service';
-import { getAllQueries } from '../services/query.service';
-import { getSettings } from '../services/settings.service';
+import { connectToDatabase } from '../../backend/config/db';
+import { initializeDatabase } from '../../backend/services/init.service';
+import { getAllProducts } from '../../backend/services/product.service';
+import { getAllCategories } from '../../backend/services/category.service';
+import { getAllReviews } from '../../backend/services/review.service';
+import { getAllQueries } from '../../backend/services/query.service';
+import { getSettings } from '../../backend/services/settings.service';
 
 // Initialize DB and get data
 export const initializeApi = async () => {

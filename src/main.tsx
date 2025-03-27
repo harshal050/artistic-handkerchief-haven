@@ -5,7 +5,11 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App.tsx';
 import './index.css';
 
-createRoot(document.getElementById("root")!).render(
+// Create the root element
+const root = createRoot(document.getElementById("root")!);
+
+// Render the app within BrowserRouter
+root.render(
   <React.StrictMode>
     <BrowserRouter>
       <App />

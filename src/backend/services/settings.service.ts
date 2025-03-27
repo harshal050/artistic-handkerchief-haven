@@ -44,7 +44,7 @@ const createDefaultSettings = async () => {
       location: "Vadodara, Gujarat, India",
       adminUsername: "rkcreation",
       adminPassword: "Krishna@2232",
-      mongoDbUrl: "mongodb+srv://harshal_050:Harshal%402772@cluster0.hchtgxj.mongodb.net/gwokdatabase?retryWrites=true&w=majority",
+      mongoDbUrl: "mongodb://localhost:27017/gwokdatabase",
       cloudinaryApiKey: "",
       cloudinaryApiSecret: "",
       cloudinaryCloudName: ""
