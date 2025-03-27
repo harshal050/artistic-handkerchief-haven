@@ -5,7 +5,11 @@ import { IQuery } from '../models/Query';
 export const getAllQueries = async (): Promise<IQuery[]> => {
   try {
     // Use the cached data from window object
-    return window.cachedData?.queries || [];
+    if (!window.cachedData?.queries) {
+      console.warn('No cached queries found, returning empty array');
+      return [];
+    }
+    return window.cachedData.queries;
   } catch (error) {
     console.error('Error fetching all queries:', error);
     throw error;
@@ -29,6 +33,8 @@ export const createQuery = async (queryData: any): Promise<IQuery> => {
     // Update the cached data
     if (window.cachedData) {
       window.cachedData.queries = [...queries, newQuery];
+    } else {
+      console.warn('No cached data found, query will not persist');
     }
     
     return newQuery;
@@ -41,7 +47,12 @@ export const createQuery = async (queryData: any): Promise<IQuery> => {
 // Update query status
 export const updateQueryStatus = async (id: string, status: 'pending' | 'done'): Promise<IQuery | null> => {
   try {
-    const queries = window.cachedData?.queries || [];
+    if (!window.cachedData?.queries) {
+      console.warn('No cached queries found, cannot update');
+      return null;
+    }
+    
+    const queries = window.cachedData.queries;
     
     // Find the query to update
     const queryIndex = queries.findIndex(q => q._id === id);
@@ -57,11 +68,9 @@ export const updateQueryStatus = async (id: string, status: 'pending' | 'done'):
     };
     
     // Update the cached data
-    if (window.cachedData) {
-      const updatedQueries = [...queries];
-      updatedQueries[queryIndex] = updatedQuery;
-      window.cachedData.queries = updatedQueries;
-    }
+    const updatedQueries = [...queries];
+    updatedQueries[queryIndex] = updatedQuery;
+    window.cachedData.queries = updatedQueries;
     
     return updatedQuery;
   } catch (error) {
@@ -73,7 +82,12 @@ export const updateQueryStatus = async (id: string, status: 'pending' | 'done'):
 // Delete a query
 export const deleteQuery = async (id: string): Promise<IQuery | null> => {
   try {
-    const queries = window.cachedData?.queries || [];
+    if (!window.cachedData?.queries) {
+      console.warn('No cached queries found, cannot delete');
+      return null;
+    }
+    
+    const queries = window.cachedData.queries;
     
     // Find the query to delete
     const queryToDelete = queries.find(q => q._id === id);
@@ -83,9 +97,7 @@ export const deleteQuery = async (id: string): Promise<IQuery | null> => {
     }
     
     // Update the cached data
-    if (window.cachedData) {
-      window.cachedData.queries = queries.filter(q => q._id !== id);
-    }
+    window.cachedData.queries = queries.filter(q => q._id !== id);
     
     return queryToDelete;
   } catch (error) {

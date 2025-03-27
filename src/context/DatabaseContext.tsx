@@ -61,26 +61,47 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       // Initialize API and fetch all data
       const data = await initializeApi();
       
+      if (!data) {
+        throw new Error('Failed to initialize API');
+      }
+      
       // Update state
-      setProducts(data.products);
-      setCategories(data.categories);
-      setReviews(data.reviews);
-      setQueries(data.queries);
-      setSettings(data.settings);
+      setProducts(data.products || []);
+      setCategories(data.categories || []);
+      setReviews(data.reviews || []);
+      setQueries(data.queries || []);
+      setSettings(data.settings || null);
       
       // Cache data for service layer
       window.cachedData = {
-        products: data.products,
-        categories: data.categories,
-        reviews: data.reviews,
-        queries: data.queries,
-        settings: data.settings
+        products: data.products || [],
+        categories: data.categories || [],
+        reviews: data.reviews || [],
+        queries: data.queries || [],
+        settings: data.settings || null
       };
       
       setError(null);
     } catch (error) {
       console.error('Error fetching data:', error);
       setError(error);
+      
+      // Initialize with empty data to prevent crashes
+      setProducts([]);
+      setCategories([]);
+      setReviews([]);
+      setQueries([]);
+      setSettings(null);
+      
+      // Initialize window.cachedData with empty arrays
+      window.cachedData = {
+        products: [],
+        categories: [],
+        reviews: [],
+        queries: [],
+        settings: null
+      };
+      
       toast.error('Failed to connect to database. Using sample data instead.');
     } finally {
       setLoading(false);

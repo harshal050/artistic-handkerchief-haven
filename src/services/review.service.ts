@@ -4,8 +4,11 @@ import { IReview } from '../models/Review';
 // Get all reviews
 export const getAllReviews = async (): Promise<IReview[]> => {
   try {
-    // Use the cached data from window object
-    return window.cachedData?.reviews || [];
+    if (!window.cachedData?.reviews) {
+      console.warn('No cached reviews found, returning empty array');
+      return [];
+    }
+    return window.cachedData.reviews;
   } catch (error) {
     console.error('Error fetching all reviews:', error);
     throw error;
@@ -15,8 +18,11 @@ export const getAllReviews = async (): Promise<IReview[]> => {
 // Get reviews by product ID
 export const getReviewsByProductId = async (productId: string): Promise<IReview[]> => {
   try {
-    const reviews = window.cachedData?.reviews || [];
-    return reviews.filter(review => review.productId === productId);
+    if (!window.cachedData?.reviews) {
+      console.warn('No cached reviews found, returning empty array');
+      return [];
+    }
+    return window.cachedData.reviews.filter(review => review.productId === productId);
   } catch (error) {
     console.error(`Error fetching reviews for product ${productId}:`, error);
     throw error;
@@ -33,11 +39,14 @@ export const createReview = async (reviewData: any): Promise<IReview> => {
       _id: Date.now().toString(), // Generate a unique ID
       ...reviewData,
       createdAt: new Date(),
+      date: new Date(),
     };
     
     // Update the cached data
     if (window.cachedData) {
       window.cachedData.reviews = [...reviews, newReview];
+    } else {
+      console.warn('No cached data found, review will not persist');
     }
     
     return newReview;
@@ -48,9 +57,14 @@ export const createReview = async (reviewData: any): Promise<IReview> => {
 };
 
 // Update an existing review
-export const updateReview = async (id: string, reviewData: Partial<IReview>): Promise<IReview> => {
+export const updateReview = async (id: string, reviewData: Partial<IReview>): Promise<IReview | null> => {
   try {
-    const reviews = window.cachedData?.reviews || [];
+    if (!window.cachedData?.reviews) {
+      console.warn('No cached reviews found, cannot update');
+      return null;
+    }
+    
+    const reviews = window.cachedData.reviews;
     
     // Find the review to update
     const reviewIndex = reviews.findIndex(r => r._id === id);
@@ -66,11 +80,9 @@ export const updateReview = async (id: string, reviewData: Partial<IReview>): Pr
     };
     
     // Update the cached data
-    if (window.cachedData) {
-      const updatedReviews = [...reviews];
-      updatedReviews[reviewIndex] = updatedReview;
-      window.cachedData.reviews = updatedReviews;
-    }
+    const updatedReviews = [...reviews];
+    updatedReviews[reviewIndex] = updatedReview;
+    window.cachedData.reviews = updatedReviews;
     
     return updatedReview;
   } catch (error) {
@@ -82,7 +94,12 @@ export const updateReview = async (id: string, reviewData: Partial<IReview>): Pr
 // Delete a review
 export const deleteReview = async (id: string): Promise<IReview | null> => {
   try {
-    const reviews = window.cachedData?.reviews || [];
+    if (!window.cachedData?.reviews) {
+      console.warn('No cached reviews found, cannot delete');
+      return null;
+    }
+    
+    const reviews = window.cachedData.reviews;
     
     // Find the review to delete
     const reviewToDelete = reviews.find(r => r._id === id);
@@ -92,9 +109,7 @@ export const deleteReview = async (id: string): Promise<IReview | null> => {
     }
     
     // Update the cached data
-    if (window.cachedData) {
-      window.cachedData.reviews = reviews.filter(r => r._id !== id);
-    }
+    window.cachedData.reviews = reviews.filter(r => r._id !== id);
     
     return reviewToDelete;
   } catch (error) {
