@@ -82,9 +82,6 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       console.error('Error fetching data:', error);
       setError(error);
       toast.error('Failed to connect to database. Using sample data instead.');
-      
-      // If there's an error, we'll still set some sample data
-      // This would be handled by the initializeApi function now
     } finally {
       setLoading(false);
     }

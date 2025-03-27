@@ -1,7 +1,6 @@
 
 import axios from 'axios';
 import { connectToDatabase } from '../../backend/config/db';
-import { initializeDatabase } from '../../backend/services/init.service';
 import { sampleProducts } from '../data/sampleProducts';
 import { sampleCategories } from '../data/sampleCategories';
 import { sampleReviews } from '../data/sampleReviews';

@@ -6,12 +6,15 @@ const MONGODB_URI = process.env.VITE_MONGODB_URI || "mongodb+srv://harshal_050:H
 
 export const connectToDatabase = async () => {
   try {
-    // Since we're in a browser environment, we should mock this connection
-    // instead of actually connecting to MongoDB
+    // Since we're in a browser environment, we need to mock the MongoDB connection
     console.log('Mocking MongoDB connection for browser environment');
     
-    // Return a successful connection mock
-    return { connection: { readyState: 1 } };
+    // Return a mock connection object
+    return { 
+      connection: { 
+        readyState: 1  // 1 means connected
+      } 
+    };
   } catch (error) {
     console.error('MongoDB connection error:', error);
     throw error;
