@@ -1,34 +1,23 @@
 
 import { ISettings } from '../models/Settings';
+import api from '../frontend/api/api';
 
 // Get settings
 export const getSettings = async (): Promise<ISettings | null> => {
   try {
-    return window.cachedData?.settings || null;
+    const response = await api.get('/settings');
+    return response.data;
   } catch (error) {
     console.error('Error fetching settings:', error);
-    throw error;
+    return null;
   }
 };
 
 // Update settings
 export const updateSettings = async (settingsData: any): Promise<ISettings | null> => {
   try {
-    if (!window.cachedData) {
-      console.warn('No cached data found, cannot update settings');
-      return null;
-    }
-    
-    // Create updated settings
-    const updatedSettings = {
-      ...window.cachedData.settings,
-      ...settingsData
-    };
-    
-    // Update cached data
-    window.cachedData.settings = updatedSettings;
-    
-    return updatedSettings;
+    const response = await api.put('/settings', settingsData);
+    return response.data;
   } catch (error) {
     console.error('Error updating settings:', error);
     throw error;

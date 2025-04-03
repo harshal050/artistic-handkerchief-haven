@@ -6,20 +6,8 @@ import { IReview } from '../models/Review';
 import { IQuery } from '../models/Query';
 import { ISettings } from '../models/Settings';
 import { initializeApi } from '../frontend/api/api';
+import api from '../frontend/api/api';
 import { toast } from 'sonner';
-
-// Declare global window with cached data property
-declare global {
-  interface Window {
-    cachedData?: {
-      products: IProduct[];
-      categories: ICategory[];
-      reviews: IReview[];
-      queries: IQuery[];
-      settings: ISettings | null;
-    };
-  }
-}
 
 interface DatabaseContextProps {
   products: IProduct[];
@@ -71,15 +59,6 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setReviews(data.reviews || []);
       setQueries(data.queries || []);
       setSettings(data.settings || null);
-      
-      // Cache data for service layer
-      window.cachedData = {
-        products: data.products || [],
-        categories: data.categories || [],
-        reviews: data.reviews || [],
-        queries: data.queries || [],
-        settings: data.settings || null
-      };
       
       setError(null);
     } catch (error) {
