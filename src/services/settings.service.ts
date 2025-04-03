@@ -1,6 +1,7 @@
 
 import { ISettings } from '../models/Settings';
 
+// Get settings
 export const getSettings = async (): Promise<ISettings | null> => {
   try {
     return window.cachedData?.settings || null;
@@ -10,13 +11,24 @@ export const getSettings = async (): Promise<ISettings | null> => {
   }
 };
 
+// Update settings
 export const updateSettings = async (settingsData: any): Promise<ISettings | null> => {
   try {
-    console.log('Updating settings:', settingsData);
-    return {
-      _id: '1',
+    if (!window.cachedData) {
+      console.warn('No cached data found, cannot update settings');
+      return null;
+    }
+    
+    // Create updated settings
+    const updatedSettings = {
+      ...window.cachedData.settings,
       ...settingsData
     };
+    
+    // Update cached data
+    window.cachedData.settings = updatedSettings;
+    
+    return updatedSettings;
   } catch (error) {
     console.error('Error updating settings:', error);
     throw error;

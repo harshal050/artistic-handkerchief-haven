@@ -2,22 +2,15 @@
 import { ISettings } from '../../models/Settings';
 
 export const defaultSettings: ISettings = {
-  _id: '1',
-  siteName: "RK Creation",
-  logo: "/lovable-uploads/9b5842dd-9df6-4558-b7b1-8f96bda04cce.png",
-  email: "rkcreation@example.com",
-  phone: "917434902998",
-  address: "Vadodara, Gujarat, India",
+  _id: "1",
   whatsappNumber: "917434902998",
-  socialLinks: {
-    facebook: "https://facebook.com/rkcreation",
-    twitter: "https://twitter.com/rkcreation",
-    instagram: "_rk.creation1",
-    youtube: "https://youtube.com/rkcreation"
-  },
-  features: {
-    enableReviews: true,
-    enableQueries: true,
-    enableNewsletter: false
-  }
+  instagramId: "_rk.creation1",
+  phoneNumber: "917434902998",
+  location: "Vadodara, Gujarat, India",
+  adminUsername: "rkcreation",
+  adminPassword: "Krishna@2232",
+  mongoDbUrl: "mongodb+srv://harshal_050:Harshal%402772@cluster0.hchtgxj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+  cloudinaryApiKey: "your_cloudinary_api_key",
+  cloudinaryApiSecret: "your_cloudinary_api_secret",
+  cloudinaryCloudName: "your_cloudinary_cloud_name"
 };

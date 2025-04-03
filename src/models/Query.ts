@@ -6,6 +6,6 @@ export interface IQuery {
   phone: string;
   message: string;
   status: 'pending' | 'done';
-  date?: Date;
-  createdAt?: Date;
+  date: Date;
+  createdAt: Date;
 }

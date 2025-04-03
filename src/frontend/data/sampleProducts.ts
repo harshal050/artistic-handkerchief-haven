@@ -3,7 +3,7 @@ import { IProduct } from '../../models/Product';
 
 export const sampleProducts: IProduct[] = [
   {
-    _id: '1',
+    _id: "1",
     name: "Wedding Handkerchief",
     category: "Wedding Collection",
     price: 1200,
@@ -17,7 +17,7 @@ export const sampleProducts: IProduct[] = [
     updatedAt: new Date()
   },
   {
-    _id: '2',
+    _id: "2",
     name: "Hastmelap Design",
     category: "Hastmelap Handkerchief",
     price: 950,
@@ -31,7 +31,7 @@ export const sampleProducts: IProduct[] = [
     updatedAt: new Date()
   },
   {
-    _id: '3',
+    _id: "3",
     name: "Astar Part Special",
     category: "Astar Part Handkerchief",
     price: 850,
@@ -43,7 +43,7 @@ export const sampleProducts: IProduct[] = [
     updatedAt: new Date()
   },
   {
-    _id: '4',
+    _id: "4",
     name: "Star Pattern Mindhol",
     category: "Mindhol Handkerchief",
     price: 1100,

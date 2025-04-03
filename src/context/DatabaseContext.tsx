@@ -85,23 +85,6 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     } catch (error) {
       console.error('Error fetching data:', error);
       setError(error);
-      
-      // Initialize with empty data to prevent crashes
-      setProducts([]);
-      setCategories([]);
-      setReviews([]);
-      setQueries([]);
-      setSettings(null);
-      
-      // Initialize window.cachedData with empty arrays
-      window.cachedData = {
-        products: [],
-        categories: [],
-        reviews: [],
-        queries: [],
-        settings: null
-      };
-      
       toast.error('Failed to connect to database. Using sample data instead.');
     } finally {
       setLoading(false);
