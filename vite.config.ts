@@ -30,4 +30,8 @@ export default defineConfig(({ mode }) => ({
 }));
 
 
+<<<<<<< HEAD
 //my commit harshal050.......
+=======
+//3rd change
+>>>>>>> main
