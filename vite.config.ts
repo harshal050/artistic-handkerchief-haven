@@ -28,3 +28,6 @@ export default defineConfig(({ mode }) => ({
   // Make sure environment variables are properly loaded
   envPrefix: "VITE_",
 }));
+
+
+//my commit harshal050
